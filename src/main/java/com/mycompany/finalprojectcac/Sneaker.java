@@ -1,7 +1,7 @@
 
 package com.mycompany.finalprojectcac;
 
-public class Sneakers {
+public class Sneaker {
     private int id_sneaker;
     private String brand;
     private String model;
@@ -9,10 +9,10 @@ public class Sneakers {
     private int price;
     
     // Constructores
-    public Sneakers(){
+    public Sneaker(){
     }
 
-    public Sneakers(int id_sneaker, String brand, String model, String img, int price) {
+    public Sneaker(int id_sneaker, String brand, String model, String img, int price) {
         this.id_sneaker = id_sneaker;
         this.brand = brand;
         this.model = model;

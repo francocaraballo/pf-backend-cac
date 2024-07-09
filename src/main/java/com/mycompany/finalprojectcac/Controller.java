@@ -1,6 +1,7 @@
 package com.mycompany.finalprojectcac;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.HttpsServer;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,11 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/sneakers")
-public class Controller {
+public class Controller extends HttpServlet {
     
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         
@@ -97,6 +99,56 @@ public class Controller {
              conexion.close();
          }
     }
+
+     protected void doPut(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+         
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "*");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        
+        Conexion conexion = new Conexion();
+        Connection conn = conexion.getConnection();
+        
+         try {
+             ObjectMapper mapper = new ObjectMapper();
+             Sneaker sneaker = mapper.readValue(req.getInputStream(), Sneaker.class);
+             
+             String brand = sneaker.getBrand();
+             String model = sneaker.getModel();
+             String img = sneaker.getImg();
+             int price = sneaker.getPrice();
+             int id_sneaker = sneaker.getId_sneaker();
+             
+             String query = "UPDATE sneakers SET brand=?, model=?, img=?, price=? WHERE id_sneaker=?";
+             PreparedStatement statement = conn.prepareStatement(query);
+             
+             statement.setString(1, brand);
+             statement.setString(2, model);
+             statement.setString(3, img);
+             statement.setInt(4, price);
+             statement.setInt(5, id_sneaker);
+             
+             statement.executeQuery();
+             
+//             ResultSet rs = statement.getGeneratedKeys();
+             
+            res.setContentType("application/json");
+            String json = mapper.writeValueAsString(id_sneaker);
+            res.getWriter().write(json);
+            
+            res.setStatus(HttpServletResponse.SC_ACCEPTED);
+             
+         } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+         } finally {
+             conexion.close();
+         }
+     }
+     
+     
+
 }
+
 
    
