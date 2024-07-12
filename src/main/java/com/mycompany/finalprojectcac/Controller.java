@@ -41,7 +41,7 @@ public class Controller extends HttpServlet {
             statement.setString(3, sneaker.getImg());
             statement.setInt(4, sneaker.getPrice());
 
-            statement.executeUpdate(query);
+            statement.executeUpdate();
 
             ResultSet rs = statement.getGeneratedKeys();
 
